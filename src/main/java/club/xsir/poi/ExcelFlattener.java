@@ -1,4 +1,4 @@
-package org.example;
+package club.xsir.poi;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -7,18 +7,21 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class ExcelFlattener {
     public static void main(String[] args) throws IOException, InvalidFormatException, InstantiationException, IllegalAccessException {
-        String filePath = "demo.xlsx";
+        String filePath = "demo.xls";
         List<DataStruct> generate = generate(filePath,DataStruct.class);
         for (DataStruct dataStructs : generate) {
             System.out.println(dataStructs);
             System.out.println("=========================================================");
         }
+        getLocalPath();
     }
 
     public static <T>  List<T>  generate(String filePath,Class<T> dataType) throws IOException, InvalidFormatException, InstantiationException, IllegalAccessException {
@@ -33,7 +36,8 @@ public class ExcelFlattener {
         try (Workbook workbook = WorkbookFactory.create(new File(filePath))) {
             Sheet sheet = workbook.getSheetAt(0);
             Row _row = sheet.getRow(0);
-            if ((_row.getLastCellNum()-_row.getFirstCellNum())!=fieldsInOrderMap.size()){
+            short numColumns = _row.getLastCellNum();
+            if ((numColumns-_row.getFirstCellNum())!=fieldsInOrderMap.size()){
                 throw new RuntimeException("实体类配置字段数跟 Excel 不一致");
             }
 
@@ -41,7 +45,8 @@ public class ExcelFlattener {
             List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
             for (Row row : sheet) {
                 List<Object> rowData = new ArrayList<>();
-                for (Cell cell : row) {
+                for (int i = 0; i < numColumns; i++) {
+                    Cell cell = row.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
                     CellRangeAddress mergedRegion = getMergedRegion(mergedRegions,
                             cell.getRowIndex(), cell.getColumnIndex());
 
@@ -54,6 +59,19 @@ public class ExcelFlattener {
                     }
                     rowData.add(getCellValue(cell));
                 }
+                //for (Cell cell : row) {
+                //    CellRangeAddress mergedRegion = getMergedRegion(mergedRegions,
+                //            cell.getRowIndex(), cell.getColumnIndex());
+                //
+                //    if (mergedRegion != null) {
+                //        // 如果是合并区域且不是第一个单元格，跳过
+                //        if (cell.getRowIndex() != mergedRegion.getFirstRow() ||
+                //                cell.getColumnIndex() != mergedRegion.getFirstColumn()) {
+                //            continue;
+                //        }
+                //    }
+                //    rowData.add(getCellValue(cell));
+                //}
                 flattenedData.add(rowData);
             }
 
@@ -127,5 +145,10 @@ public class ExcelFlattener {
                 }
             default: return "";
         }
+    }
+
+    private static void getLocalPath(){
+        String userDir = System.getProperty("user.dir");
+        System.out.println(userDir);
     }
 }

@@ -13,6 +13,11 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface FieldOrder {
-    int value();
+public @interface FieldInfo {
+    int order();
+
+    String name() default "";
+
+    int columnWidth() default 100;
+
 }

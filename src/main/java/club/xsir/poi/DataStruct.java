@@ -8,28 +8,28 @@ package club.xsir.poi;
  */
 public class DataStruct implements Cloneable{
 
-    @FieldOrder(1)
+    @FieldInfo(order = 1,name = "序号")
     private String num;
 
-    @FieldOrder(2)
+    @FieldInfo(order = 2,name = "分支机构名称")
     private String stypeName;
 
-    @FieldOrder(3)
+    @FieldInfo(order = 3,name = "入库仓库")
     private String inStock;
 
-    @FieldOrder(4)
+    @FieldInfo(order = 4,name = "客户编码")
     private String customer;
 
-    @FieldOrder(5)
+    @FieldInfo(order = 5,name = "成品仓")
     private String cpStock;
 
-    @FieldOrder(6)
+    @FieldInfo(order = 6,name = "供应商")
     private String supplier;
 
-    @FieldOrder(7)
+    @FieldInfo(order = 7,name = "备注1")
     private String remark1;
 
-    @FieldOrder(8)
+    @FieldInfo(order = 8,name = "备注2")
     private String remark2;
 
     public String getNum() {

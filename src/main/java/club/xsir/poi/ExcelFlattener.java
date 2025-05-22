@@ -21,14 +21,13 @@ public class ExcelFlattener {
             System.out.println(dataStructs);
             System.out.println("=========================================================");
         }
-        getLocalPath();
     }
 
     public static <T>  List<T>  generate(String filePath,Class<T> dataType) throws IOException, InvalidFormatException, InstantiationException, IllegalAccessException {
 
         Map<Integer, Field> fieldsInOrderMap = FieldOrderUtil.getFieldsInOrderMap(dataType);
 
-        if (fieldsInOrderMap==null || fieldsInOrderMap.isEmpty()){
+        if (fieldsInOrderMap.isEmpty()){
             throw new RuntimeException("实体类设置错误!");
         }
 
@@ -145,10 +144,5 @@ public class ExcelFlattener {
                 }
             default: return "";
         }
-    }
-
-    private static void getLocalPath(){
-        String userDir = System.getProperty("user.dir");
-        System.out.println(userDir);
     }
 }
